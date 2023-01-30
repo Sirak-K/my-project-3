@@ -6,3 +6,6 @@ The functionality behind this game is as follows:
 3) The user is prompted to guess a row and then a column.
 4) A value of HIT or MISS will be displayed depending on if the guess was correct or not.
 5) The process is repeated until there are no more turns left or all the ships of a player has been sunken.
+
+Written in Python.
+Deployed with GitHub and Heroku.
