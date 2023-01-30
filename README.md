@@ -9,3 +9,6 @@ The functionality behind this game is as follows:
 
 Written in Python.
 Deployed with GitHub and Heroku.
+
+Code structure is inspired by Knowledge Mavens Youtube tutorial:
+https://www.youtube.com/watch?v=tF1WRCrd_HQ&
