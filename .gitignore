@@ -6,3 +6,7 @@ __pycache__/
 *.py[cod]
 node_modules/
 .github/
+run -safe old 03-16.py
+run -safe a1 03-16.py
+run bara notes.py
+.vscode/settings.json

@@ -7,7 +7,7 @@ exports.install = function () {
     WEBSOCKET('/', socket, ['raw']);
 
 };
-
+  
 function socket() {
 
     this.encodedecode = false;
