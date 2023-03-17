@@ -1,155 +1,125 @@
 from random import randint
 
-
-# Creates a 8x8 two-dimensional list: guesses (ship locations)
+# Creates a 2D list: GUESSES (ship locations)
 HIDDEN_BOARD = [[" "] * 8 for x in range(8)]
 
-# The >>     [" "] * 8     << creates a list of 8 space characters, 
-# The >> for i in range(8) << repeats this process 8 times to create a list of 8 lists. 
-
-# Creates a 8x8 two-dimensional list: hits and misses
+# Creates a 2D list: HITS & MISSES
 GUESS_BOARD = [[" "] * 8 for i in range(8)]
 
 
+def show_board(board: list) -> None:
+    """
+    Prints the game board to the console.
 
-# DEFINE A FUNCTION: called show_board that takes a single argument called board
-# The row number is incremented by 1 with each iteration through the loop
-def show_board(board):
-    
-    # PRINT A HEADER ROW with the column labels for the game board
+    Parameters:
+    - board: a 2D list representing the game board.
+
+    """
+     
+    # PRINT A HEADER
     print("  A B C D E F G H")
     
-    # PRINT A HORIZONTAL LINE to separate the header row from the game board
+    # PRINT A HORIZONTAL LINE
     print("  +-+-+-+-+-+-+-+")
     
-    # INITIALIZE A ROW NUMBER variable to 1
-    row_number = 1
+    current_row_number = 1
     
-    # ITERATE OVER EACH ROW in the board variable
+    # ITERATE
     for row in board:
-        # Combine the characters in the row with vertical bars to create a string representation of the row
-        # and print the row number and string representation of the row with vertical bars
-        print("%d|%s|" % (row_number, "|".join(row)))
-        # Increment the row number variable by 1
-        row_number += 1
+        
+        print("%d|%s|" % (current_row_number, "|".join(row)))
+        
+        current_row_number += 1
 
 
-# CREATE A DICTIONARY called game_grid that maps each letter from 'A' to 'H' to an integer value from 0 to 7
-game_grid = {
-    'A': 0,
-    'B': 1,
-    'C': 2,
-    'D': 3,
-    'E': 4,
-    'F': 5,
-    'G': 6,
-    'H': 7
+# BOARD COORDINATES
+board_coordinates = {
+    'A': 0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7
 }
 
 
-# -- F 1 # Implement a given algorithm as a computer program --------------------------------------------------------
-# The function places 5 ships randomly on the board.
-def ship_create(board):
-    
-    # LOOP 5 TIMES TO CREATE 5 SHIPS
+def create_ship(board: list) -> None: 
+    """
+    Randomly places 5 ships on the game board.
+
+    Parameters:
+    - board: a 2D list representing the game board.
+     """
+
     for ship in range(5):
-        
-        # GENERATE RANDOM ROW AND COLUMN INDICES FOR the ship
+        print("Creating ship %d" % (ship+1))
         ship_row, ship_column = randint(0, 7), randint(0, 7)
         
-        # CHECK IF THE CHOSEN POSITION ALREADY HAS A SHIP ON IT
         while board[ship_row][ship_column] == "X":
             
-            # IF THE CHOSEN POSITION ALREADY HAS A SHIP ON IT, 
-            # GENERATE NEW random row and column indices
-            ship_row, ship_column = ship_location()
+            ship_row, ship_column = get_board_coordinates()
         
-        # SET THE CHOSEN POSITION ON THE BOARD to contain a ship
         board[ship_row][ship_column] = "X"
 
 
 
+def get_board_coordinates() -> tuple:
+    """
+    Prompts the user to input the coordinates of a ship on the game board.
 
-# -- F 2 # Adapt and combine algorithms to solve a given problem --------------------------------------------------------
-# This code defines a function ship_location that prompts 
-# the user to input the location (row and column) of a ship on the board.
-# This function prompts the user to enter a row and column for a ship location,
-# and validates that the input is a valid row and column for the game board.
-def ship_location():
-    
-    # PROMPT THE USER to enter a row for the ship
+    Returns:
+    - a tuple containing the row and column indices of the ship.
+    """
+
     row = input("Enter row: ").upper()
     
-    # VALIDATE ROW INPUT is a valid row number for the game board
     while row not in "12345678":
         print('Please select a valid row')
         row = input("Enter row: ").upper()
     
-    # PROMPT THE USER to enter a column for the ship
     column = input("Enter column: ").upper()
     
-    # VALIDATE COLUMN INPUT is a valid column letter for the game board
     while column not in "ABCDEFGH":
         print('Please select a valid column')
         column = input("Enter column: ").upper()
     
-    # CONVERT ROW COLUMN INPUTS to integer indices for the game board
-    # (subtract 1 from the row number to account for zero-indexing)
-    return int(row) - 1, game_grid[column]
+    return int(row) - 1, board_coordinates[column]
 
 
-# -- F 3 --------------------------------------------------------
-# This code defines a function hits that takes a 2D-list as an argument.
-# This function counts the number of "X" characters (representing hits) on the game board.
-def hits(board):
-    
-    # INITIALIZE VARIABLE to 0
-    count = 0
-    
-    # ITERATE OVER EACH ROW in the board
+def hit_tracker(board: list) -> int:
+    """
+    Returns the number of hits on the guess board.
+
+    Parameters:
+    - board: a 2D list representing the guess board.
+
+    Returns:
+    - an integer representing the number of "X" characters on the board.
+    """
+
+    hit_count = 0
+
     for row in board:
-        
-        # ITERATE OVER EACH COLUMN in the row
+
         for column in row:
-            
-            # IF the current position contains an "X", 
-            # INCREMENT THE VARIABLE
+
             if column == "X":
-                count += 1
-    
-    # RETURN the final count of hits on the board
-    return count
+                hit_count += 1
+
+    return hit_count
 
 
 
-# Adequately use standard programming constructs: repetition, 
-# selection, functions, composition, modules, aggregated data (arrays, lists, etc.)
 
-# The following code block runs when the program is executed as a standalone script.
-# The code creates 5 ships on the hidden board, and then prompts the user to guess the locations of the ships.
 if __name__ == "__main__":
     
-    # CREATE 5 SHIPS on the hidden board
-    ship_create(HIDDEN_BOARD)
+    create_ship(HIDDEN_BOARD)
     
-    # INITIALIZE THE NUMBER of turns to 10
-    turns = 10
+    turns_left = 10
     
-    # REPEAT THE GUESSING process until the user runs out of turns or sinks all 5 ships
-    while turns > 0:
+    while turns_left > 0:
         
-        # PRINT A MESSAGE prompting the user to guess a battleship location
         print('Guess a battleship location')
         
-        # DISPLAY THE CURRENT state of the guess board to the user
         show_board(GUESS_BOARD)
         
-        # PROMPT THE USER to enter a row and column for their guess
-        row, column = ship_location()
+        row, column = get_board_coordinates()
         
-        # IF THE GUESSED position on the guess board already contains a "-" (indicating a previous miss),
-        
-        # PRINT AN ERROR message and skip the rest of the loop.
         if GUESS_BOARD[row][column] == "-":
             print("You guessed that one already.")
         
@@ -159,30 +129,24 @@ if __name__ == "__main__":
         elif HIDDEN_BOARD[row][column] == "X":
             print("Hit")
             GUESS_BOARD[row][column] = "X"
-            turns -= 1
+            turns_left -= 1
         
-
-
-
         # IF THE GUESSED position on the hidden board does not contain an "X" (indicating a miss),
         # PRINT A FAILURE message and update the guess board to display a "-".
         # THEN, DECREMENT the number of turns remaining.
         else:
             print("MISS!")
             GUESS_BOARD[row][column] = "M" # display "M" for missed hit
-            turns -= 1
-        
-
-
+            turns_left -= 1
 
         # IF THE USER has sunk all 5 ships, print a victory message and exit the loop.
-        if hits(GUESS_BOARD) == 5:
+        if hit_tracker(GUESS_BOARD) == 5:
             print("You win!")
             break
         
         # PRINT THE NUMBER of turns remaining
-        print("You have " + str(turns) + " turns left")
+        print("You have " + str(turns_left) + " turns left")
         
         # IF THE USER has run out of turns, print a failure message and exit the loop.
-        if turns == 0:
+        if turns_left == 0:
             print("You ran out of turns")

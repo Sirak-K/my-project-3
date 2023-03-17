@@ -4,9 +4,12 @@ core.python*
 env.py
 __pycache__/
 *.py[cod]
-node_modules/
 .github/
+node_modules/
+.vscode/settings.json
+
 run -safe old 03-16.py
 run -safe a1 03-16.py
 run bara notes.py
-.vscode/settings.json
+run -SAFE WITH COMMENTS 03-17.py
+run -SAFE NO COMMENTS 03-17.py
