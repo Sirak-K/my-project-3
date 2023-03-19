@@ -6,10 +6,15 @@ __pycache__/
 *.py[cod]
 .github/
 node_modules/
+.vscode/extensions.json
+.vscode/launch.json
 .vscode/settings.json
-
+.gitignore
 run -safe old 03-16.py
 run -safe a1 03-16.py
 run bara notes.py
 run -SAFE WITH COMMENTS 03-17.py
 run -SAFE NO COMMENTS 03-17.py
+run latest, before EOFError trycatch.py
+run (((((( MAINNN )))))))))).py
+

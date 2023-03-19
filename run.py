@@ -1,11 +1,12 @@
 from random import randint
 
+
 # Creates a 2D list: GUESSES (ship locations)
 HIDDEN_BOARD = [[" "] * 8 for x in range(8)]
 
 # Creates a 2D list: HITS & MISSES
 GUESS_BOARD = [[" "] * 8 for i in range(8)]
-
+hit_count = 0
 
 def show_board(board: list) -> None:
     """
@@ -50,11 +51,11 @@ def create_ship(board: list) -> None:
         print("Creating ship %d" % (ship+1))
         ship_row, ship_column = randint(0, 7), randint(0, 7)
         
-        while board[ship_row][ship_column] == "X":
+        while board[ship_row][ship_column] == "H":
             
             ship_row, ship_column = get_board_coordinates()
         
-        board[ship_row][ship_column] = "X"
+        board[ship_row][ship_column] = "H"
 
 
 
@@ -62,28 +63,31 @@ def get_board_coordinates() -> tuple:
     """
     Prompts the user to input the coordinates of a ship on the game board.
 
-    Returns:
+    Returns:S
     - a tuple containing the row and column indices of the ship.
     """
 
-    row = input("Enter row: ").upper()
-    
-    while row not in "12345678":
-        print('Please select a valid row')
-        row = input("Enter row: ").upper()
-    
-    column = input("Enter column: ").upper()
-    
-    while column not in "ABCDEFGH":
-        print('Please select a valid column')
-        column = input("Enter column: ").upper()
-    
+    # ROW
+    row = input("Choose ROW 1-8: \n").upper().strip()
+    print("You chose ROW: %s" % row)
+    while row not in "12345678" or row == "":
+        print('Please select a valid ROW')
+        row = input("Choose ROW 1-8: \n").upper().strip()
+
+    # COLUMN
+    column = input("Choose COLUMN A-H: \n").upper().strip()
+    print("You chose COLUMN: %s" % column)
+    while column not in "ABCDEFGH" or column == "":
+        print('Please select a valid COLUMN')
+        column = input("Choose COLUMN A-H: \n").upper().strip()
+
     return int(row) - 1, board_coordinates[column]
+
 
 
 def hit_tracker(board: list) -> int:
     """
-    Returns the number of hits on the guess board.
+    Returns the number of hits on the guess board and updates the hit_count variable.
 
     Parameters:
     - board: a 2D list representing the guess board.
@@ -98,11 +102,10 @@ def hit_tracker(board: list) -> int:
 
         for column in row:
 
-            if column == "X":
+            if column == "H":
                 hit_count += 1
 
     return hit_count
-
 
 
 
@@ -110,36 +113,32 @@ if __name__ == "__main__":
     
     create_ship(HIDDEN_BOARD)
     
-    turns_left = 10
+    turns_left = 3
     
     while turns_left > 0:
         
         print('Guess a battleship location')
         
         show_board(GUESS_BOARD)
+        show_board(HIDDEN_BOARD)
         
         row, column = get_board_coordinates()
         
-        if GUESS_BOARD[row][column] == "-":
-            print("You guessed that one already.")
+        if GUESS_BOARD[row][column] == "H" or GUESS_BOARD[row][column] == "M":
+            print("This coordinate has already been targeted. Choose another!")
+    
         
-        # IF THE GUESSED position on the hidden board contains an "X" (indicating a hit),
-        # PRINT A SUCCESS message and update the guess board to display an "X".
-        # THEN, DECREMENT the number of turns remaining.
-        elif HIDDEN_BOARD[row][column] == "X":
-            print("Hit")
-            GUESS_BOARD[row][column] = "X"
+
+        elif HIDDEN_BOARD[row][column] == "H":
+            print("HIT!")
+            GUESS_BOARD[row][column] = "H"
             turns_left -= 1
         
-        # IF THE GUESSED position on the hidden board does not contain an "X" (indicating a miss),
-        # PRINT A FAILURE message and update the guess board to display a "-".
-        # THEN, DECREMENT the number of turns remaining.
         else:
             print("MISS!")
             GUESS_BOARD[row][column] = "M" # display "M" for missed hit
             turns_left -= 1
 
-        # IF THE USER has sunk all 5 ships, print a victory message and exit the loop.
         if hit_tracker(GUESS_BOARD) == 5:
             print("You win!")
             break
@@ -150,3 +149,5 @@ if __name__ == "__main__":
         # IF THE USER has run out of turns, print a failure message and exit the loop.
         if turns_left == 0:
             print("You ran out of turns")
+            # PRINT FINAL SCORE
+            print("Total Hits: " + str(hit_count))

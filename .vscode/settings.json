@@ -26,5 +26,6 @@
    "workbench.colorCustomizations": {
       "terminal.selectionBackground": "#05a327cb",
       
-   }
+   },
+   "python.analysis.typeCheckingMode": "basic"
 }
