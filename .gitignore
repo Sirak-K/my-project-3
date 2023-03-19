@@ -17,4 +17,5 @@ run -SAFE WITH COMMENTS 03-17.py
 run -SAFE NO COMMENTS 03-17.py
 run latest, before EOFError trycatch.py
 run (((((( MAINNN )))))))))).py
-
+run (((((( MAINNN )))))))))) 03 - 19 (!).py
+run experimental not-failed 03-19 copy.py
