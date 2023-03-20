@@ -27,5 +27,6 @@
       "terminal.selectionBackground": "#05a327cb",
       
    },
-   "python.analysis.typeCheckingMode": "basic"
+   "python.analysis.typeCheckingMode": "basic",
+   "search.useParentIgnoreFiles": true
 }
