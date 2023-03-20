@@ -5,11 +5,12 @@ env.py
 __pycache__/
 *.py[cod]
 .github/
+.gitignore
 node_modules/
 .vscode/extensions.json
 .vscode/launch.json
 .vscode/settings.json
-.gitignore
+.pylintrc
 run -safe old 03-16.py
 run -safe a1 03-16.py
 run bara notes.py
@@ -19,3 +20,7 @@ run latest, before EOFError trycatch.py
 run (((((( MAINNN )))))))))).py
 run (((((( MAINNN )))))))))) 03 - 19 (!).py
 run experimental not-failed 03-19 copy.py
+run - 03-20 1 (!).py
+run - 03-20 2 (!) before making play_again (restart functionality).py
+run - 03-20 3 (!) change row name to row_idx.py
+NOTES 03-20.py
