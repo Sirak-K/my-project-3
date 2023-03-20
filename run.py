@@ -60,40 +60,56 @@ BOARD_COORDINATES = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H"
 # Define a constant variable for the number of ships
 NUM_SHIPS = 5
 
-def create_ship(board: list, board_scale: str) -> None:
+
+def create_ship(board, board_size, used_coords) -> None:
     """
     Randomly places 5 ships on the game board.
 
     Parameters:
     - board: a 2D list representing the game board.
-    - board_scale: a string representing the board size ("small", "medium", or "large").
+    - board_size: a string representing the board size ("small", "medium", or "large").
     """
+ # Create a set to store used coordinates
+    used_coords = set()
 
     # Calculate the size of the board
     # VARIABLES DEFINED
-    if board_scale == "small":
+    if board_size == "small":
         board_scale_x = 4
         board_scale_y = 4
-    elif board_scale == "medium":
+    elif board_size == "medium":
         board_scale_x = 6
         board_scale_y = 6
-    elif board_scale == "large":
+    elif board_size == "large":
         board_scale_x = 8
         board_scale_y = 8
     else:
         raise ValueError("Invalid board size. Please choose small, medium, or large.")
 
+    print("Creating Ships ", end="")
     for ship in range(NUM_SHIPS):
-        print("Creating ship %d" % (ship + 1))
+        if ship == NUM_SHIPS - 1:
+            print(ship + 1)
+        else:
+            print(ship + 1, end="-")
 
         while True:
+            # Generate random coordinates
             ship_row, ship_column = randint(0, board_scale_y - 1), randint(
                 0, board_scale_x - 1
             )
 
+            # Check if coordinates have been used before
+            if (ship_row, ship_column) in used_coords:
+                continue
+
+            # If coordinates have not been used before, add them to used_coords and place the ship
+            used_coords.add((ship_row, ship_column))
+
             if board[ship_row][ship_column] == " ":
                 board[ship_row][ship_column] = "S"
                 break
+
 
 
 def get_board_coordinates(hidden_board) -> tuple:
@@ -120,10 +136,16 @@ def get_board_coordinates(hidden_board) -> tuple:
 
     while True:
         try:
-            column = input("Choose COLUMN A-{}: ".format(chr(64 + len(hidden_board[0])))).strip().upper()
+            column = (
+                input("Choose COLUMN A-{}: ".format(chr(64 + len(hidden_board[0]))))
+                .strip()
+                .upper()
+            )
             print("You chose COLUMN: %s" % column)
             # VALIDATE INPUT: COLUMN
-            if not (len(column) == 1 and 'A' <= column <= chr(64 + len(hidden_board[0]))):
+            if not (
+                len(column) == 1 and "A" <= column <= chr(64 + len(hidden_board[0]))
+            ):
                 raise ValueError("Invalid input. Please enter a valid column letter.")
 
             column = ord(column) - 65
@@ -168,18 +190,19 @@ def reset_game_state(board_sizes):
     - board_sizes: a string representing the board size ("small", "medium", or "large").
 
     Returns:
-    - a tuple containing the hidden_board, guess_board, turns_left, and hit_count variables.
+    - a tuple containing the hidden_board, guess_board, TURNS_LEFT, and hit_count variables.
     """
     hidden_board = BOARD_SIZES_DICT[board_sizes]["HIDDEN_BOARD"]
     guess_board = BOARD_SIZES_DICT[board_sizes]["GUESS_BOARD"]
-    turns_left = 3
+    TURNS_LEFT = 3
     hit_count = 0
 
     # Reset hidden_board and guess_board using a list comprehension
     hidden_board[:] = [[" "] * len(hidden_board[0]) for _ in hidden_board]
     guess_board[:] = [[" "] * len(guess_board[0]) for _ in guess_board]
 
-    return hidden_board, guess_board, turns_left, hit_count
+    return hidden_board, guess_board, TURNS_LEFT, hit_count
+
 
 # NEW FUNCTION
 def setup_game(board_size):
@@ -188,37 +211,46 @@ def setup_game(board_size):
     and resetting the hidden and guess boards.
 
     Returns:
-    - a tuple containing the hidden_board, guess_board, and turns_left variables.
+    - a tuple containing the hidden_board, guess_board, and TURNS_LEFT variables.
     """
 
     # Prompt user for board size and reset hidden_board and guess_board
-    board_size = input("Please enter the board size (small, medium, large): ").lower().strip()
+    board_size = (
+        input("Please enter the board size (small, medium, large): ").lower().strip()
+    )
     while board_size not in ["small", "medium", "large"]:
-        board_size = input("Invalid board size. Please enter again (small, medium, large): ").lower().strip()
+        board_size = (
+            input("Invalid board size. Please enter again (small, medium, large): ")
+            .lower()
+            .strip()
+        )
 
+    # Get the board and board scale based on the board size
     hidden_board = BOARD_SIZES_DICT[board_size]["HIDDEN_BOARD"]
     guess_board = BOARD_SIZES_DICT[board_size]["GUESS_BOARD"]
-    turns_left = 3
+    TURNS_LEFT = 3
+
+    # Create sets to store used coordinates for ship placement
+    used_coords = set()
 
     # Reset hidden_board and guess_board using a list comprehension
     hidden_board[:] = [[" "] * len(hidden_board[0]) for _ in hidden_board]
     guess_board[:] = [[" "] * len(guess_board[0]) for _ in guess_board]
 
     # Randomly place 5 ships on the hidden board
-    create_ship(hidden_board, board_size)
+    create_ship(hidden_board, board_size, used_coords)
 
-    return hidden_board, guess_board, turns_left
+    return hidden_board, guess_board, TURNS_LEFT
 
 
 if __name__ == "__main__":
     play_again = "yes"
     while play_again.lower() == "yes":
 
-       
-        hidden_board, guess_board, turns_left = setup_game("")
+        hidden_board, guess_board, TURNS_LEFT = setup_game("")
         hit_count = 0
 
-        while turns_left > 0:
+        while TURNS_LEFT > 0:
             print("Your turn! Guess a battleship location.")
 
             show_board(guess_board)
@@ -240,7 +272,7 @@ if __name__ == "__main__":
             else:
                 print("MISS!")
                 guess_board[row][column] = "M"
-                turns_left -= 1
+                TURNS_LEFT -= 1
                 # Check win condition
                 # If the player hits all # ships, end the game
                 if hit_count == NUM_SHIPS:
@@ -248,10 +280,10 @@ if __name__ == "__main__":
                     break
 
             # PRINT THE NUMBER of turns remaining
-            print("You have " + str(turns_left) + " turns left.")
+            print("You have " + str(TURNS_LEFT) + " turns left.")
 
             # IF THE USER has run out of turns, print a failure message and exit the loop.
-            if turns_left == 0:
+            if TURNS_LEFT == 0:
                 print("You ran out of turns.")
                 print("Total Hits: " + str(hit_count))
         # Prompt user to play again or exit
