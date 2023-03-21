@@ -1,49 +1,26 @@
-# Great! These are all good optimizations to consider. Here's a summary of the optimizations with their new names according to the Karis-4 methodology:
-# Opt-1: Remove unnecessary variables.
-# Opt-2: Use list comprehensions to create the boards.
-# Opt-3: Use elif instead of if for multiple conditions in the get_board_coordinates() function.
-# Opt-4: Use format() instead of concatenation in the show_board() function.
-# Opt-5: Avoid unnecessary function calls by combining show_board() calls in the main loop.
-# Opt-6: Simplify the create_ship() function by using random.sample().
-# Opt-7: Avoid unnecessary copying of lists in the reset_game_state() function.
-# Opt-8: Simplify the setup_game() function by removing the board_size parameter and using a dictionary to map user input to board sizes.
-
-
 from random import sample
 
 # LIST: GUESSES
-HIDDEN_BOARD_small = [[" "] * 4] * 4
-HIDDEN_BOARD_medium = [[" "] * 6] * 6
-HIDDEN_BOARD_large = [[" "] * 8] * 8
+HIDDEN_BOARD_small = [[" " for _ in range(4)] for _ in range(4)]
+HIDDEN_BOARD_medium = [[" " for _ in range(6)] for _ in range(6)]
+HIDDEN_BOARD_large = [[" " for _ in range(8)] for _ in range(8)]
 
 # LIST: HITS & MISSES
-GUESS_BOARD_small = [[" "] * 4] * 4
-GUESS_BOARD_medium = [[" "] * 6] * 6
-GUESS_BOARD_large = [[" "] * 8] * 8
+GUESS_BOARD_small = [[" " for _ in range(4)] for _ in range(4)]
+GUESS_BOARD_medium = [[" " for _ in range(6)] for _ in range(6)]
+GUESS_BOARD_large = [[" " for _ in range(8)] for _ in range(8)]
 
 # DICTIONARY
 # DICTIONARY KEYS: small, medium, large
 # DICTIONARY KEYS: HIDDEN_BOARD, GUESS_BOARD
 BOARD_SIZES_DICT = {
-    "s": {"HIDDEN_BOARD": HIDDEN_BOARD_small,
-          "GUESS_BOARD": GUESS_BOARD_small},
-    "m": {"HIDDEN_BOARD": HIDDEN_BOARD_medium,
-          "GUESS_BOARD": GUESS_BOARD_medium},
-    "l": {"HIDDEN_BOARD": HIDDEN_BOARD_large,
-          "GUESS_BOARD": GUESS_BOARD_large}
+    "s": {"HIDDEN_BOARD": HIDDEN_BOARD_small, "GUESS_BOARD": GUESS_BOARD_small},
+    "m": {"HIDDEN_BOARD": HIDDEN_BOARD_medium, "GUESS_BOARD": GUESS_BOARD_medium},
+    "l": {"HIDDEN_BOARD": HIDDEN_BOARD_large, "GUESS_BOARD": GUESS_BOARD_large},
 }
 
 # BOARD COORDINATES
-BOARD_COORDINATES = {
-    "A": 0,
-    "B": 1,
-    "C": 2,
-    "D": 3,
-    "E": 4,
-    "F": 5,
-    "G": 6,
-    "H": 7
-}
+BOARD_COORDINATES = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7}
 
 # Define a constant variable for the number of ships
 NUM_SHIPS = 5
@@ -75,10 +52,11 @@ def show_board(board: list) -> None:
 
     # Use a list comprehension to generate the row strings
     for i, row in enumerate(board):
-        print("{0}|{1}|".format(i + 1, '|'.join(row)))
+        print("{0}|{1}|".format(i + 1, "|".join(row)))
 
     # PRINT A HORIZONTAL LINE
     print(" +{0}".format("-+" * board_scale))
+
 
 def show_boards(guess_board, hidden_board):
     print("Guess Board:")
@@ -86,7 +64,8 @@ def show_boards(guess_board, hidden_board):
     print("\nHidden Board:")
     show_board(hidden_board)
 
-def create_ship(board, board_size) -> None:
+
+def create_ship(board) -> None:
     """
     Randomly places 5 ships on the game board.
 
@@ -98,17 +77,22 @@ def create_ship(board, board_size) -> None:
     board_scale_y = len(board)
 
     print("Creating Ships ", end="")
-    
-    # Generate a list of all possible coordinates on the board
-    all_coords = [(row, col) for row in range(board_scale_y) for col in range(board_scale_x)]
 
-    for idx, (ship_row, ship_column) in enumerate(sample(all_coords, NUM_SHIPS), start=1):
+    # Generate a list of all possible coordinates on the board
+    all_coords = [
+        (row, col) for row in range(board_scale_y) for col in range(board_scale_x)
+    ]
+
+    for idx, (ship_row, ship_column) in enumerate(
+        sample(all_coords, NUM_SHIPS), start=1
+    ):
         if idx == NUM_SHIPS:
             print(idx)
         else:
             print(idx, end="-")
-            
+
         board[ship_row][ship_column] = "S"
+
 
 def get_board_coordinates(hidden_board) -> tuple:
     """
@@ -125,9 +109,7 @@ def get_board_coordinates(hidden_board) -> tuple:
 
             # VALIDATE INPUT: ROW
             if not (row.isdigit() and 1 <= int(row) <= len(hidden_board)):
-                raise ValueError(
-                    "Invalid input. " "Please enter a valid column letter."
-                )
+                raise ValueError("Invalid input. Please enter a valid column letter.")
 
             row = int(row) - 1
 
@@ -138,20 +120,15 @@ def get_board_coordinates(hidden_board) -> tuple:
 
     while True:
         try:
-            column = input(
-                f"Choose COLUMN A-{chr(64 + len(hidden_board[0]))}: "
-            )
+            column = input(f"Choose COLUMN A-{chr(64 + len(hidden_board[0]))}: ")
             column = column.strip().upper()
             print("You chose COLUMN: %s" % column)
 
             # VALIDATE INPUT: COLUMN
             if not (
-                len(column) == 1
-                and "A" <= column <= chr(64 + len(hidden_board[0]))
+                len(column) == 1 and "A" <= column <= chr(64 + len(hidden_board[0]))
             ):
-                raise ValueError(
-                    "Invalid input. " "Please enter a valid column letter."
-                )
+                raise ValueError("Invalid input. Please enter a valid column letter.")
 
             column = ord(column) - 65
 
@@ -162,7 +139,8 @@ def get_board_coordinates(hidden_board) -> tuple:
 
     return row, column
 
-def hit_tracker(board: list) -> int:
+
+def count_hits(board: list) -> int:
     """
     Returns the number of hits on the
     guess board and updates the hit_count variable.
@@ -174,17 +152,8 @@ def hit_tracker(board: list) -> int:
     - an integer representing the number of "X"
     characters on the board.
     """
+    return sum(1 for row in board for column in row if column == "H")
 
-    hit_count = 0
-
-    for row in board:
-
-        for column in row:
-
-            if column == "H":
-                hit_count += 1
-
-    return hit_count
 
 def reset_game_state(board_size):
     """
@@ -205,11 +174,12 @@ def reset_game_state(board_size):
     # Create new hidden_board and guess_board using a list comprehension
     hidden_board = [[" "] * board_scale for _ in range(board_scale)]
     guess_board = [[" "] * board_scale for _ in range(board_scale)]
-    
+
     TURNS_LEFT = 3
     hit_count = 0
 
     return hidden_board, guess_board, TURNS_LEFT, hit_count
+
 
 def setup_game():
     """
@@ -222,13 +192,10 @@ def setup_game():
       and TURNS_LEFT variables.
     """
 
-    board_size = input(
-        "Please enter the board size (s, m, l): "
-    ).lower().strip()
+    board_size = input("Please enter the board size (s, m, l): ").lower().strip()
     while board_size not in ["s", "m", "l"]:
         board_size = (
-            input("Invalid board size. "
-                  "Please enter again (s, m, l): ")
+            input("Invalid board size. " "Please enter again (s, m, l): ")
             .lower()
             .strip()
         )
@@ -242,9 +209,10 @@ def setup_game():
     hidden_board, guess_board, TURNS_LEFT, _ = reset_game_state(board_size)
 
     # Randomly place 5 ships on the hidden board
-    create_ship(hidden_board, board_size)
+    create_ship(hidden_board)
 
     return hidden_board, guess_board, TURNS_LEFT
+
 
 if __name__ == "__main__":
     play_again = "yes"
@@ -255,14 +223,13 @@ if __name__ == "__main__":
 
         while TURNS_LEFT > 0:
             show_boards(guess_board, hidden_board)
-            
+
             print("Your turn! Guess a battleship location.")
 
             row, column = get_board_coordinates(hidden_board)
 
             if guess_board[row][column] in ["H", "M"]:
-                print("This coordinate has already been targeted. "
-                      "Choose another!")
+                print("This coordinate has already been targeted. " "Choose another!")
             elif hidden_board[row][column] == "S":
                 print("HIT!")
                 guess_board[row][column] = "H"
@@ -291,5 +258,6 @@ if __name__ == "__main__":
                 print("You ran out of turns.")
                 print("Total Hits: " + str(hit_count))
         # Prompt user to play again or exit
-        play_again = input("Do you want to play again?  "
-                           "yes or no): ").lower().strip()
+        play_again = (
+            input("Do you want to play again?  " "yes or no): ").lower().strip()
+        )
