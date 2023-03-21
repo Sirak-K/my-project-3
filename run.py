@@ -1,6 +1,6 @@
 from random import sample
 
-# Initialize hidden and guess boards for small, medium, and large sizes
+# Initialize hidden and guess boards for the various sizes
 # HIDDEN_BOARD_*: Contains hidden ship locations
 HIDDEN_BOARD_small = [[" " for _ in range(4)] for _ in range(4)]
 HIDDEN_BOARD_medium = [[" " for _ in range(6)] for _ in range(6)]
@@ -36,7 +36,6 @@ BOARD_COORDINATES = {
 NUM_SHIPS = 5
 
 
-
 # ----------------- FUNCTIONS START ---------------- #
 
 
@@ -46,15 +45,14 @@ def show_board(board: list) -> None:
 
     Parameters:
     - board: a 2D list (game board).
-
     """
-
     board_scale = len(board[0])
 
     # Generate column headers (A, B, C, etc.) based on board_scale
-    # by converting ASCII values to characters
     column_headers = "  "
-    column_headers += " ".join(chr(i) for i in range(65, 65 + board_scale))
+    column_headers += " ".join(
+        [chr(i) for i in range(65, 65 + board_scale)]
+    )
     print(column_headers)
 
     # Print horizontal line
@@ -69,6 +67,13 @@ def show_board(board: list) -> None:
 
 
 def show_boards(guess_board, hidden_board):
+    """
+    Prints the player's guess board and the hidden board to the console.
+
+    Parameters:
+    - guess_board: a 2D list (player's guess board).
+    - hidden_board: a 2D list (hidden board with ship locations).
+    """
     print("Guess Board:")
     show_board(guess_board)
     print("\nHidden Board:")
@@ -87,9 +92,16 @@ def create_ship(board) -> None:
 
     print("Creating Ships ", end="")
 
-      # Generate a list of all possible coordinates
-      # and randomly select NUM_SHIPS of them
-    ship_coords = sample([(x, y) for x in range(board_scale_x) for y in range(board_scale_y)], NUM_SHIPS)
+    # Generate ship coordinates by sampling
+    # unique (x, y) positions from the board.
+    ship_coords = sample(
+        [
+            (x, y)
+            for x in range(0, board_scale_x)
+            for y in range(0, board_scale_y)
+        ],
+        NUM_SHIPS,
+    )
 
     print("Creating Ships ", end="")
     for idx, (ship_row, ship_column) in enumerate(ship_coords, start=1):
@@ -98,7 +110,7 @@ def create_ship(board) -> None:
             print(idx)
         else:
             print(idx, end="-")
-        # Place ship on the board  
+        # Place ship on the board
         board[ship_row][ship_column] = "S"
 
 
@@ -111,13 +123,17 @@ def get_board_coordinates(hidden_board) -> tuple:
     """
     while True:
         try:
-            row = input("Choose ROW 1-{}: ".format(len(hidden_board)))
+            row = input(f"Choose ROW 1-{len(hidden_board)}: ")
             row = row.strip().upper()
             print("You chose ROW: %s" % row)
 
             # Validate row input
+            # Validate input for row number
+            # and raise a ValueError if input is invalid
+            # Valid input is an integer between 1 and the length of the board.
             if not (row.isdigit() and 1 <= int(row) <= len(hidden_board)):
-                raise ValueError("Invalid input. Please enter a valid row number.")
+                raise ValueError("Invalid input. "
+                                 "Please enter a valid row number.")
 
             row = int(row) - 1
 
@@ -128,15 +144,17 @@ def get_board_coordinates(hidden_board) -> tuple:
 
     while True:
         try:
-            column = input(f"Choose COLUMN A-{chr(64 + len(hidden_board[0]))}: ")
+            column_range = chr(64 + len(hidden_board[0]))
+            column_prompt = f"Choose COLUMN A-{column_range}: "
+            column = input(column_prompt)
             column = column.strip().upper()
-            print("You chose COLUMN: %s" % column)
+            print(f"You chose COLUMN: {column}")
 
             # Validate column input
-            if not (
-                len(column) == 1 and "A" <= column <= chr(64 + len(hidden_board[0]))
-            ):
-                raise ValueError("Invalid input. Please enter a valid column letter.")
+            if not (len(column) == 1 and
+                    "A" <= column <= chr(64 + len(hidden_board[0]))):
+                raise ValueError("Invalid input. "
+                                 "Please enter a valid column letter.")
 
             column = ord(column) - 65
 
@@ -180,7 +198,7 @@ def reset_game_state(board_size):
     hidden_board = [[" "] * board_scale for _ in range(board_scale)]
     guess_board = [[" "] * board_scale for _ in range(board_scale)]
 
-    TURNS_LEFT = 3
+    TURNS_LEFT = 10
     hit_count = 0
 
     return hidden_board, guess_board, TURNS_LEFT, hit_count
@@ -197,7 +215,8 @@ def setup_game():
       and TURNS_LEFT variables.
     """
     # Prompt user for board size and validate the input
-    board_size = input("Please enter the board size (s, m, l): ").lower().strip()
+    board_size = input("Please enter the board size "
+                       "(s, m, l): ").lower().strip()
     while board_size not in ["s", "m", "l"]:
         board_size = (
             input("Invalid board size. " "Please enter again (s, m, l): ")
@@ -208,7 +227,7 @@ def setup_game():
     # Get the board and board scale based on the board size
     hidden_board = BOARD_SIZES_DICT[board_size]["HIDDEN_BOARD"]
     guess_board = BOARD_SIZES_DICT[board_size]["GUESS_BOARD"]
-    TURNS_LEFT = 3
+    TURNS_LEFT = 10
 
     # Reset hidden_board, guess_board, and turns_left
     hidden_board, guess_board, TURNS_LEFT, _ = reset_game_state(board_size)
@@ -231,13 +250,14 @@ if __name__ == "__main__":
         while TURNS_LEFT > 0:
             show_boards(guess_board, hidden_board)
             print("Your turn! Guess a battleship location.")
-            
+
             # Get player's guess and validate input
             row, column = get_board_coordinates(hidden_board)
-            
+
             # Process the player's guess
             if guess_board[row][column] in ["H", "M"]:
-                print("This coordinate has already been targeted. " "Choose another!")
+                print("This coordinate has already been targeted. "
+                      "Choose another!")
             elif hidden_board[row][column] == "S":
                 print("HIT!")
                 guess_board[row][column] = "H"
@@ -257,7 +277,6 @@ if __name__ == "__main__":
                     print("You win!")
                     break
 
-
             # Display remaining turns
             print(f"You have {TURNS_LEFT} turns left.")
 
@@ -265,8 +284,9 @@ if __name__ == "__main__":
             if TURNS_LEFT == 0:
                 print("You ran out of turns.")
                 print("Total Hits: " + str(hit_count))
-       
+
         # Prompt user to play again or exit
         play_again = (
-            input("Do you want to play again?  " "yes or no): ").lower().strip()
+            input("Do you want to play again?  "
+                  "yes or no): ").lower().strip()
         )
