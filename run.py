@@ -1,14 +1,25 @@
-from random import randint
+# Great! These are all good optimizations to consider. Here's a summary of the optimizations with their new names according to the Karis-4 methodology:
+# Opt-1: Remove unnecessary variables.
+# Opt-2: Use list comprehensions to create the boards.
+# Opt-3: Use elif instead of if for multiple conditions in the get_board_coordinates() function.
+# Opt-4: Use format() instead of concatenation in the show_board() function.
+# Opt-5: Avoid unnecessary function calls by combining show_board() calls in the main loop.
+# Opt-6: Simplify the create_ship() function by using random.sample().
+# Opt-7: Avoid unnecessary copying of lists in the reset_game_state() function.
+# Opt-8: Simplify the setup_game() function by removing the board_size parameter and using a dictionary to map user input to board sizes.
+
+
+from random import sample
 
 # LIST: GUESSES
-HIDDEN_BOARD_small = [[" "] * 4 for x in range(4)]
-HIDDEN_BOARD_medium = [[" "] * 6 for x in range(6)]
-HIDDEN_BOARD_large = [[" "] * 8 for x in range(8)]
+HIDDEN_BOARD_small = [[" "] * 4] * 4
+HIDDEN_BOARD_medium = [[" "] * 6] * 6
+HIDDEN_BOARD_large = [[" "] * 8] * 8
 
 # LIST: HITS & MISSES
-GUESS_BOARD_small = [[" "] * 4 for i in range(4)]
-GUESS_BOARD_medium = [[" "] * 6 for i in range(6)]
-GUESS_BOARD_large = [[" "] * 8 for i in range(8)]
+GUESS_BOARD_small = [[" "] * 4] * 4
+GUESS_BOARD_medium = [[" "] * 6] * 6
+GUESS_BOARD_large = [[" "] * 8] * 8
 
 # DICTIONARY
 # DICTIONARY KEYS: small, medium, large
@@ -37,7 +48,6 @@ BOARD_COORDINATES = {
 # Define a constant variable for the number of ships
 NUM_SHIPS = 5
 
-hit_count = 0
 
 # ----------------- FUNCTIONS START ---------------- #
 
@@ -61,17 +71,22 @@ def show_board(board: list) -> None:
     print(column_headers)
 
     # PRINT A HORIZONTAL LINE
-    print(" +" + "-+" * board_scale)
+    print(" +{0}".format("-+" * board_scale))
 
     # Use a list comprehension to generate the row strings
     for i, row in enumerate(board):
-        print(f"{i+1}|{'|'.join(row)}|")
+        print("{0}|{1}|".format(i + 1, '|'.join(row)))
 
     # PRINT A HORIZONTAL LINE
-    print(" +" + "-+" * board_scale)
+    print(" +{0}".format("-+" * board_scale))
 
+def show_boards(guess_board, hidden_board):
+    print("Guess Board:")
+    show_board(guess_board)
+    print("\nHidden Board:")
+    show_board(hidden_board)
 
-def create_ship(board, board_size, used_coords) -> None:
+def create_ship(board, board_size) -> None:
     """
     Randomly places 5 ships on the game board.
 
@@ -79,49 +94,21 @@ def create_ship(board, board_size, used_coords) -> None:
     - board: a 2D list representing the game board.
     - board_size: a string representing the board size ("s", "m", or "l").
     """
-    # Create a set to store used coordinates
-    used_coords = set()
-
-    # Calculate the size of the board
-    # VARIABLES DEFINED
-    if board_size == "s":
-        board_scale_x = 4
-        board_scale_y = 4
-    elif board_size == "m":
-        board_scale_x = 6
-        board_scale_y = 6
-    elif board_size == "l":
-        board_scale_x = 8
-        board_scale_y = 8
-    else:
-        raise ValueError("Invalid board size. Please choose s, m, or l.")
+    board_scale_x = len(board[0])
+    board_scale_y = len(board)
 
     print("Creating Ships ", end="")
-    for ship in range(NUM_SHIPS):
-        if ship == NUM_SHIPS - 1:
-            print(ship + 1)
+    
+    # Generate a list of all possible coordinates on the board
+    all_coords = [(row, col) for row in range(board_scale_y) for col in range(board_scale_x)]
+
+    for idx, (ship_row, ship_column) in enumerate(sample(all_coords, NUM_SHIPS), start=1):
+        if idx == NUM_SHIPS:
+            print(idx)
         else:
-            print(ship + 1, end="-")
-
-        while True:
-            # Generate random coordinates
-            ship_row, ship_column = randint(0, board_scale_y - 1), randint(
-                0, board_scale_x - 1
-            )
-
-            # Check if coordinates have been used before
-            if (ship_row, ship_column) in used_coords:
-                continue
-
-            # If coordinates have not been used before,
-            # add them to used_coords and
-            # place the ship
-            used_coords.add((ship_row, ship_column))
-
-            if board[ship_row][ship_column] == " ":
-                board[ship_row][ship_column] = "S"
-                break
-
+            print(idx, end="-")
+            
+        board[ship_row][ship_column] = "S"
 
 def get_board_coordinates(hidden_board) -> tuple:
     """
@@ -175,7 +162,6 @@ def get_board_coordinates(hidden_board) -> tuple:
 
     return row, column
 
-
 def hit_tracker(board: list) -> int:
     """
     Returns the number of hits on the
@@ -200,36 +186,32 @@ def hit_tracker(board: list) -> int:
 
     return hit_count
 
-
-def reset_game_state(board_sizes):
+def reset_game_state(board_size):
     """
-    Functionality
     Resets the game state for a new game by
     initializing necessary variables
     and clearing the hidden and guess boards.
 
     Parameters:
-    - board_sizes: a string representing the board size
+    - board_size: a string representing the board size
     ("s", "m", or "l").
 
     Returns:
     - a tuple containing the hidden_board, guess_board,
     TURNS_LEFT, and hit_count variables.
     """
-    hidden_board = BOARD_SIZES_DICT[board_sizes]["HIDDEN_BOARD"]
-    guess_board = BOARD_SIZES_DICT[board_sizes]["GUESS_BOARD"]
+    board_scale = len(BOARD_SIZES_DICT[board_size]["HIDDEN_BOARD"])
+
+    # Create new hidden_board and guess_board using a list comprehension
+    hidden_board = [[" "] * board_scale for _ in range(board_scale)]
+    guess_board = [[" "] * board_scale for _ in range(board_scale)]
+    
     TURNS_LEFT = 3
     hit_count = 0
 
-    # Reset hidden_board and guess_board using a list comprehension
-    hidden_board[:] = [[" "] * len(hidden_board[0]) for _ in hidden_board]
-    guess_board[:] = [[" "] * len(guess_board[0]) for _ in guess_board]
-
     return hidden_board, guess_board, TURNS_LEFT, hit_count
 
-
-# NEW FUNCTION
-def setup_game(board_size):
+def setup_game():
     """
     Sets up the game by initializing necessary variables,
     prompting user for board size,
@@ -256,30 +238,24 @@ def setup_game(board_size):
     guess_board = BOARD_SIZES_DICT[board_size]["GUESS_BOARD"]
     TURNS_LEFT = 3
 
-    # Create sets to store used coordinates for ship placement
-    used_coords = set()
-
     # Reset hidden_board and guess_board using a list comprehension
-    hidden_board[:] = [[" "] * len(hidden_board[0]) for _ in hidden_board]
-    guess_board[:] = [[" "] * len(guess_board[0]) for _ in guess_board]
+    hidden_board, guess_board, TURNS_LEFT, _ = reset_game_state(board_size)
 
     # Randomly place 5 ships on the hidden board
-    create_ship(hidden_board, board_size, used_coords)
+    create_ship(hidden_board, board_size)
 
     return hidden_board, guess_board, TURNS_LEFT
-
 
 if __name__ == "__main__":
     play_again = "yes"
     while play_again.lower() == "yes":
 
-        hidden_board, guess_board, TURNS_LEFT = setup_game("")
+        hidden_board, guess_board, TURNS_LEFT = setup_game()
         hit_count = 0
 
         while TURNS_LEFT > 0:
-
-            show_board(guess_board)
-            show_board(hidden_board)
+            show_boards(guess_board, hidden_board)
+            
             print("Your turn! Guess a battleship location.")
 
             row, column = get_board_coordinates(hidden_board)
