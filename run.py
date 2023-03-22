@@ -1,4 +1,48 @@
 from random import sample
+import sys
+import time
+def print_fast(ltr):
+    """
+    Creates a fast typing effect
+    """
+    for letter in ltr:
+        sys.stdout.write(letter)
+        sys.stdout.flush()
+        time.sleep(0.05)
+
+
+def print_slow(ltr):
+    """
+    Creates a slow typing effect
+    """
+    for letter in ltr:
+        sys.stdout.write(letter)
+        sys.stdout.flush()
+        time.sleep(0.1)
+
+
+# Game introduction
+def intro():
+    """
+    This is the game introduction. Game logo, and welcome
+    message will print which is followed by a question
+    of if the player has played this game before
+    """
+    print("""\
+    \u001B[31m
+  ____        _   _   _           _     _
+ |  _ \      | | | | | |         | |   (_)
+ | |_) | __ _| |_| |_| | ___  ___| |__  _ _ __  ___
+ |  _ < / _` | __| __| |/ _ \/ __| '_ \| | '_ \/ __|
+ | |_) | (_| | |_| |_| |  __/\__ \ | | | | |_) \__ |
+ |____/ \__,_|\__|\__|_|\___||___/_| |_|_| .__/|___/
+                                         | |
+                                         |_|
+\u001b[0m
+""")
+
+    print_slow("Welcome to battleships!\n")
+
 
 # Initialize hidden and guess boards for the various sizes
 # HIDDEN_BOARD_*: Contains hidden ship locations
@@ -231,7 +275,7 @@ def setup_game():
 if __name__ == "__main__":
     play_again = "yes"
     while play_again.lower() == "yes":
-
+        intro() # Call the intro function here before prompting the user
         # Setup game and initialize variables
         hidden_board, guess_board, TURNS_LEFT = setup_game()
         hit_count = 0
