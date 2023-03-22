@@ -17,8 +17,6 @@ The game will prompt you to enter the board size at the start of each game. Choo
 ### Game Setup
 -   Each player gets their ships placed on their own grid without the other player seeing.
 -   Ships can be placed horizontally or vertically.
--   Ships must be placed entirely within the grid.
--   Players cannot place ships adjacent to each other.
 
 ### Gameplay Mechanics
 -   Players take turns guessing the location of the other player's ships by calling out a coordinate on the grid.
@@ -32,19 +30,14 @@ The game will prompt you to enter the board size at the start of each game. Choo
 -   Row numbers range from 1 to the length of the board (e.g. 1-8 for a large board).
 -   Column letters range from A to the last letter of the alphabet corresponding to the length of the board e.g. A-H for a large board and A-D for a small board.
 
-## Testing & Validation
+# Testing & Validation
 ## Testing
-
-![Alt Text](game_tests.png)
-
-
+![game_tests](https://user-images.githubusercontent.com/122515678/226830414-bbc71dcc-8518-4d2e-a220-4a0a3e262052.png)
 
 ## Validation
 ### CI Python Linting Validator:
+![code_validation](https://user-images.githubusercontent.com/122515678/226830442-801a84ef-8e3c-4819-bc2a-03f2a43f89d9.png)
 
-  
-
-## Deployment
-
+ 
 
 ## Credits
