@@ -29,7 +29,7 @@ def intro():
     of if the player has played this game before
     """
     print("""\
-    \u001B[31m
+    \033[92m
   ____        _   _   _           _     _
  |  _ \      | | | | | |         | |   (_)
  | |_) | __ _| |_| |_| | ___  ___| |__  _ _ __  ___
@@ -38,7 +38,7 @@ def intro():
  |____/ \__,_|\__|\__|_|\___||___/_| |_|_| .__/|___/
                                          | |
                                          |_|
-\u001b[0m
+\033[0m
 """)
 
     print_slow("Welcome to battleships!\n")
