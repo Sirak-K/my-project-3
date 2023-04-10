@@ -3,7 +3,7 @@
 This game is a Python implementation of the classic board game Battleships. The game involves two players, each of whom hides a number of ships on a grid. The other player then attempts to guess the locations of the ships by calling out coordinates on the grid. The game continues until all of one player's ships have been sunk.
 
 # How To Install
-1.  Clone the repository: git clone https://github.com/your_username/battleships.git
+1.  Clone the repository: git clone https://github.com/Sirak-K/my-project-3.git
 2.  Navigate to the `battleships` directory: cd battleships
 3.  Run the game: python run.py
 # How To Play
