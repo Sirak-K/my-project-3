@@ -4,8 +4,8 @@ This game is a Python implementation of the classic board game Battleships. The 
 
 # How To Install
 1.  Clone the repository: git clone https://github.com/Sirak-K/my-project-3.git
-2.  Navigate to the `battleships` directory: cd battleships
-3.  Run the game: python run.py
+2.  Navigate to the `my-project-3` directory: cd `my-project-3`
+3.  Run the game: `python run.py`
 # How To Play
 
 ### Objective
