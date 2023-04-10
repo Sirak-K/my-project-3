@@ -11,28 +11,3 @@ node_modules/
 .vscode/launch.json
 .vscode/settings.json
 .pylintrc
-run -safe old 03-16.py
-run -safe a1 03-16.py
-run bara notes.py
-run -SAFE WITH COMMENTS 03-17.py
-run -SAFE NO COMMENTS 03-17.py
-run latest, before EOFError trycatch.py
-run (((((( MAINNN )))))))))).py
-run (((((( MAINNN )))))))))) 03 - 19 (!).py
-run experimental not-failed 03-19 copy.py
-run - 03-20 1 (!).py
-run - 03-20 2 (!) before making play_again (restart functionality).py
-run - 03-20 3 (!) change row name to row_idx.py
-NOTES 03-20.py
-run - 03-20 5 (!) innan skapade setup_game functi.py
-run - 03-20 4 (!) B4 Testing.py
-.vscode/settings.json
-run - 03-20 6 (!) Refactor-1 bra o klar .py
-run - 03-21 - 2 (!) Python Linting DONE.py
-run - 03-21 - 1 (!) morgonens initiella.py
-run - 03-21 - 3 (!) Optz-1-8.py
-run - 03-21 4 (!) Refactor-4 COMMENTS KLAR  KLAR.py
-run - 03-21 5 (!) B4 SOPTA och KOPTA.py
-final test - safe 03-22.py
-final run - safe 03-22.py
-.gitignore
