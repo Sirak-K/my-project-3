@@ -6,6 +6,7 @@ import time
 # VARIABLES
 
 # Initialize hidden and guess boards for the various sizes
+
 # HIDDEN_BOARD: Contains hidden ship locations
 HIDDEN_BOARD_SMALL = [[" " for _ in range(4)] for _ in range(4)]
 HIDDEN_BOARD_MEDIUM = [[" " for _ in range(6)] for _ in range(6)]
@@ -46,7 +47,7 @@ BOARD_COORDINATES = {
 # NUM_SHIPS: Constant for number of ships in game
 NUM_SHIPS = 5
 
-
+# Game Introduction
 def print_fast(ltr):
     """
     Creates a fast typing effect
@@ -55,8 +56,6 @@ def print_fast(ltr):
         sys.stdout.write(letter)
         sys.stdout.flush()
         time.sleep(0.05)
-
-
 def print_slow(ltr):
     """
     Creates a slow typing effect.
@@ -65,9 +64,6 @@ def print_slow(ltr):
         sys.stdout.write(letter)
         sys.stdout.flush()
         time.sleep(0.1)
-
-
-# Game introduction
 def intro():
     """
     This is the game introduction.
@@ -87,7 +83,7 @@ def intro():
 
     print_slow("Welcome to battleships!\n")
 
-
+# Mechanics
 def show_board(board: list) -> None:
     """
     Prints the game board to the console.
@@ -111,8 +107,6 @@ def show_board(board: list) -> None:
 
     # Print another horizontal line
     print(" +{0}".format("-+" * board_scale))
-
-
 def show_boards(guess_board, hidden_board):
     """
     Prints the player's guess board and the hidden board to the console.
@@ -122,8 +116,6 @@ def show_boards(guess_board, hidden_board):
     - hidden_board: a 2D list (hidden board with ship locations).
     """
     show_board(guess_board)
-
-
 def create_ship(board) -> None:
     """
     Randomly places 5 ships on the game board.
@@ -148,8 +140,6 @@ def create_ship(board) -> None:
     # Loop through the ship coordinates
     for ship_row, ship_column in ship_coords:
         board[ship_row][ship_column] = "S"
-
-
 def get_board_coordinates(hidden_board) -> tuple:
     """
     Prompts the user to input the coordinates of a ship on the game board.
@@ -203,8 +193,6 @@ def get_board_coordinates(hidden_board) -> tuple:
             print(e)
 
     return row, column
-
-
 def count_hits(board: list) -> int:
     """
     Returns the number of hits on the guess board
@@ -217,8 +205,6 @@ def count_hits(board: list) -> int:
     characters on the board.
     """
     return sum(1 for row in board for column in row if column == "H")
-
-
 def reset_game_state(board_size):
     """
     Resets the game state for a new game
@@ -245,8 +231,6 @@ def reset_game_state(board_size):
     hit_count = 0
 
     return hidden_board, guess_board, TURNS_LEFT, hit_count
-
-
 def setup_game():
     """
     Sets up the game by initializing variables,
@@ -280,7 +264,7 @@ def setup_game():
 
     return hidden_board, guess_board, TURNS_LEFT
 
-
+# Loop
 if __name__ == "__main__":
     play_again = "yes"
     while play_again.lower() == "yes":
