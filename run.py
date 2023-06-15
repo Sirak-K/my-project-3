@@ -149,7 +149,7 @@ def get_board_coordinates(hidden_board) -> tuple:
     """
     while True:
         try:
-            row = input(f"Choose ROW 1-{len(hidden_board)}: ")
+            row = input(f"Choose ROW 1-{len(hidden_board)}:\n")
             row = row.strip().upper()
             print("You chose ROW: %s" % row)
 
@@ -243,11 +243,11 @@ def setup_game():
     """
     # Prompt user for board size and validate the input
     board_size = input("Please enter the board size "
-                       "(s, m, l): ").lower().strip()
+                       "(s, m, l):\n").lower().strip()
     while board_size not in ["s", "m", "l"]:
         board_size = (
             input("Invalid board size."
-                  "Please enter again (s, m, l): ")
+                  "Please enter again (s, m, l):\n")
             .lower()
             .strip()
         )
@@ -311,5 +311,5 @@ if __name__ == "__main__":
 
         # Prompt user to play again or exit
         play_again = (
-            input("Do you want to play again? (Yes or No): ").lower().strip()
+            input("Do you want to play again? (Yes or No):\n").lower().strip()
         )
